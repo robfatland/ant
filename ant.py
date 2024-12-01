@@ -161,7 +161,7 @@ def GeneralizedTotient(k, n):
 
 def ExtendedTotient(x, n): 
     '''ExtendedTotient(float x, int n) returns integer count of rp-to-n for m <= floor(x)'''
-    if x < 1: return 'ExtendedTotient(float x, int n) error: x less than 1'
+    if x < 1: return 0
     if n < 1: return 'ExtendedTotient(float x, int n) error: n not in Z+'
     extended_totient = 0
     for i in range(1, floor(x) + 1):
