@@ -78,7 +78,7 @@ def uniquefactors(n):
         
 def gcd(a, b):
     '''gcd(a, b) arguments in Z+ returns (a, b)'''
-    if a < 1 or b < 1: return('something has gone terribly wrong')
+    if a < 1 or b < 1: return('gcd(a, b) error: at least one argument is less than 1')
     af, bf, g = factor(a), factor(b), 1
     for f in af:
         if f in bf: bf.remove(f); g *= f
@@ -187,13 +187,17 @@ def Nu(n):
     if n == 1: return 0
     return len(uniquefactors(n))
     
-#
-# Dirichlet convolution section
-#   (f, g, n) works directly off the definition for f * g
-#   ..."using lists" presumes f and g are lists of values for 1, 2, ..., n
-#   ...then there are some aliases
-#   ...then across lists produces a list of D-products for n = 1, 2, ..., given n
-# 
+
+
+# Dirichlet product / convolution
+#   Dirichlet(fn1, fn2, n) uses two function names to calculate fn1 * fn2 at n
+#     ...ListDirichlet(l1, l2, n) likewise returns a Dirichlet product at n:
+#          this version works from list-based functions with indices 0, 1, 2, ..., n
+#          index 0 is never used, l1[1] is the function value at 1 and so forth
+#     ...ScanningListDirichlet returns a list of D-products for n = 1, 2, ..., m
+#          where m is the minimum list length between l1 and l2
+
+ 
 def Dirichlet(fn1, fn2, n):
     '''Dirichlet(fn1, fn2, n) returns D'product of two functions evaluated at n'''
     if n < 1: print("Dirichlet(fn1, fn2, n) error: n not in Z+")
@@ -219,6 +223,10 @@ def ScanningListDirichlet(l1, l2):
         for n in range(start_n, end_n): 
             DirProds.append(ListDirichlet(l1, l2, n))
     return(DirProds)
+
+#
+# Functions
+#
 
 def I(n):
     '''I(n) returns 1 if n is 1, 0 otherwise (the identity function for D'multiplication)'''
