@@ -249,6 +249,32 @@ def Na(n, a):
     if n < 1: return 'Na(n) error: n not in Z+'
     return n**a
 
+
+# Frenkel: A miraccle describing an infinite sequence of numbers a(p) using Harmonic Analysis
+#
+# validate by computation: The counting problem solution for a particular elliptic
+# curve modulo p equals the coefficients of a generating function: For each q raised
+# to the p. The elliptic curve in consideration is y**2 + y = x**3 - x**2.
+# 
+# From numberphile: Frenkel on the Langlands program, https://www.youtube.com/watch?v=4dyytPboqvE&t=910s
+#
+# polynomial = q (1-q)**2 (1 - q**11)**2 (1-q**2)**2 (1-q**22)**2 (1-q**3)**2 (1-q**33)**2 (1-q**4)**2
+#   giving coefficients of q, q**2, q**3, ... as 1, -2, -1, 2, 1, 2, -2, -2, -2, 1, -2, 4, ...
+# This can be checked for primes 2, 3, 5, 7, 11, 13 (or more were we inclined to do some algebra)
+
+def EvaluateEF(a0, a1, a2, b0, b1, b2, b3, x, y, p):
+    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
+    y_sum = a0 + a1*y + a2*(y**2) 
+    x_sum = b0 + b1*x + b2*(x**2) + b3*(x**3)          # odd error: make final exponent 2 to recover count = -p
+    return (y_sum % p) == (x_sum % p)
+
+def EllipticTest(x, y, p):
+    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
+    y_sum = y**2 + y 
+    x_sum = x**3 - x**2
+    return (y_sum % p) == (x_sum % p)
+
+
 if __name__ == '__main__':
     '''ant module main: test the functions to make sure they do what they ought'''
     print("Diagnostic prints for all ant module functions")
@@ -287,8 +313,22 @@ if __name__ == '__main__':
           ScanningListDirichlet([0, 1, 2, 3, 4, 6, 6, 7], [0, 7, 6, 5, 4, 3, 2, 1]))
     print('I(10):', I(10))
     print('U(20):', U(20))
-    print('N(73):', N(73))
-    print('Na(4, 3):', Na(4, 3))
+    print('N(73):', N(73), '(should be identity)')
+    print('Na(4, 3):', Na(4, 3), '(should be a**b)')
+    
+    print('\nCompare generating function coefficient values with counting problem solutions')
+    p_less_solns = []
+    for p in [2, 3, 5, 7, 11, 13]:
+        count_solutions = 0
+        for x in range(p):
+            for y in range(p):
+                if EllipticTest(x, y, p): count_solutions += 1
+        p_less_solns.append(p - count_solutions)
+    print(p_less_solns)
+    print([-2, -1, 1, -2, 1, 4])
+    
+                
+                
 
 
 
