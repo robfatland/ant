@@ -249,8 +249,12 @@ def Na(n, a):
     if n < 1: return 'Na(n) error: n not in Z+'
     return n**a
 
+def d(n):
+    '''d(n) returns the number of divisors of n'''
+    return len(divisors(n))
 
-# Frenkel: A miraccle describing an infinite sequence of numbers a(p) using Harmonic Analysis
+
+# Frenkel: A miracle describing an infinite sequence of numbers a(p) using Harmonic Analysis
 #
 # validate by computation: The counting problem solution for a particular elliptic
 # curve modulo p equals the coefficients of a generating function: For each q raised
@@ -276,7 +280,7 @@ def EllipticTest(x, y, p):
 
 
 if __name__ == '__main__':
-    '''ant module main: test the functions to make sure they do what they ought'''
+    '''ant module main: test the functions. Run this from the command line "python ant.py"'''
     print("Diagnostic prints for all ant module functions")
     print("...not comprehensive but these act as a first cut at validation...")
     print()
