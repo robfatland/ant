@@ -1,18 +1,25 @@
 # analytic number theory utilities
+#   notes
+#     - Function lists do not index to integers; it is too much of a hassle
+#         - func1[0] is the value of the function evaluated at n = 1
 
-from math import sqrt, prod, log2, floor
+from math import sqrt, prod, log2, log10, log, floor, ceil, nan
+
 
 def even(a):
     '''even(n) returns True or False'''
     return False if a%2 else True
 
+
 def odd(a): 
     '''odd(n) returns True or False'''
     return True if a%2 else False
 
+
 def divides(a, b): 
     '''divides(a, b) "does a divide b?" returns True or False'''
     return not bool(b % a)
+
 
 def prime(n):
     '''prime(n) returns True or False'''
@@ -21,13 +28,16 @@ def prime(n):
         if not n%i: return False
     return True
 
+
 def is_prime(n): 
     '''is_prime(n) returns True or False'''
     return(prime(n))
 
+
 def IsPrime(n):
     '''IsPrime(n) returns True or False'''
     return(prime(n))
+
 
 def factor(n):
     '''factor(n) returns a sorted list: prime factorization (or [1])'''
@@ -43,6 +53,7 @@ def factor(n):
         if d > u: break                        # end of outer while
     if n_redux > 1: f.append(n_redux)          # include any residual > 1
     return f
+
 
 def exponentfactor(n):
     '''exponentfactor(n > 1) returns a list of (prime, exponent) tuples'''
@@ -89,20 +100,27 @@ def relativelyprime(a, b):
     '''relativelyprime(a, b) returns True or False'''
     return True if gcd(a, b) == 1 else False
 
+
 def relprime(a, b): 
     '''relprime(a, b) returns True or False'''
     return relativelyprime(a, b)
+
 
 def is_relativelyprime(a, b): 
     '''is_relativelyprime(a, b) returns True or False'''
     return relativelyprime(a, b)
 
+
 def listproduct(l):
     '''listproduct(l) returns the product of all elements in l'''
     return prod(l)
 
+
 def divisors(n):
-    '''divisors(n) returns a sorted list of all divisors of n'''
+    '''
+    divisors(n) returns a sorted list of all divisors of n starting
+    at element 0 having value 1.
+    '''
     if n < 1: return
     d, f = [1], factor(n)                      # factor() is the list of primes with repetitions
     nf = len(f)                                # 60 will have nf = 4: [2, 2, 3, 5]
@@ -116,7 +134,10 @@ def divisors(n):
 
 
 def divisors_less_n(n):
-    '''divisors_less_n(n) returns a sorted list of all divisors of n except n itself'''
+    '''
+    divisors_less_n(n) returns a sorted list of all divisors of n except n itself
+    starting at element 0 equals 1.
+    '''
     if n < 1: return
     d, f = [1], factor(n)                      # factor() is the list of primes with repetitions
     nf = len(f)                                # 60 will have nf = 4: [2, 2, 3, 5]
@@ -132,7 +153,9 @@ def divisors_less_n(n):
 
 
 def boolkey(n):
-    '''boolkey(n) returns list(bool(binary(n))) in ascending-power order'''
+    '''
+    boolkey(n) returns list(bool(binary(n))) in ascending-power order
+    '''
     key = [False]*(int(log2(n))+1)
     while n > 0:
         p = int(log2(n))
@@ -150,6 +173,9 @@ def Totient(n):
     return totient
 
 
+def totient(n): return Totient(n)
+
+
 def GeneralizedTotient(k, n):
     '''GeneralizedTotient(k, n) returns integer sum of k'th powers of { m | (m < n, n) = 1 }'''
     if k < 0: return 'GeneralizedTotient(k, n) error: k not in 0, 1, ... '
@@ -158,6 +184,7 @@ def GeneralizedTotient(k, n):
     for i in range(2, n):    # Only active for n > 2 notice
         if relativelyprime(n, i): gtotient += i**k
     return gtotient
+
 
 def ExtendedTotient(x, n): 
     '''ExtendedTotient(float x, int n) returns integer count of rp-to-n for m <= floor(x)'''
@@ -168,6 +195,7 @@ def ExtendedTotient(x, n):
         if relativelyprime(i, n): extended_totient += 1
     return extended_totient       
 
+
 def Mobius(n):
     '''Mobius(n) returns integer mu(n)'''
     if n < 1: return 'Mobius(n) error: n not in Z+'
@@ -177,9 +205,14 @@ def Mobius(n):
         if i[1] > 1: return 0
     return int((-1)**len(p))
 
+
+def mobius(n): return Mobius(n)
+
+
 def TotientMobiusProduct(n):
     '''TotientMobiusProduct(n) returns Totient(n) * Mobius(n)'''
     return Totient(n) * Mobius(n)
+
 
 def Nu(n):
     '''Nu(n) returns integer count of unique prime factors of n'''
@@ -206,27 +239,47 @@ def Dirichlet(fn1, fn2, n):
     for d in divisors(n): total += fn1(d) * fn2(n//d)
     return total
 
+
+def dirichlet(fn1, fn2, n): 
+    '''
+    Return the Dirichlet product of two functions evaluated at n
+    '''
+    return Dirichlet(fn1, fn2, n)
+
+
+
 def ListDirichlet(l1, l2, n):
-    '''ListDirichlet(l1, l2, n) r's D'product at n: Functions as lists indexed [0, ..., n]'''
-    if n < 1: print("ListDirichlet(l1, l2, n) error: n not in Z+")
-    if n == 1: return(l1[1]*l2[1])
+    '''
+    ListDirichlet(l1, l2, n) returns the Dirichlet product of two (list) functions evaluated at n.
+    These functions are taken as value lists indexed [0, ..., n-1] so n is equal to an
+    index i plus one. For a divisor d the index will be d-1.
+    '''
+    if n < 1:  return False
+    if n == 1: return(l1[0]*l2[0])
     total = 0
-    for d in divisors(n): total += l1[d] * l2[n//d]
+    for d in divisors(n): total += l1[d-1] * l2[n//d - 1]
     return total
 
-def ScanningListDirichlet(l1, l2):
-    '''ScanningListDirichlet(l1, l2) returns D'products indexed 0, 1, ... min(len(l1), len(l2))'''
-    DirProds = [0]
-    start_n = 1
-    end_n = min(len(l1), len(l2))
-    if end_n >= 1:
-        for n in range(start_n, end_n): 
-            DirProds.append(ListDirichlet(l1, l2, n))
-    return(DirProds)
 
+def ScanningListDirichlet(l1, l2):
+    '''
+    ScanningListDirichlet(l1, l2) returns a list of n Dirichlet products indexed
+    0, 1, ... n-1. Here n = min(len(l1), len(l2)). Let len(l1) = 13 and len(l2) = 8.
+    These correspond to elements 0 - 12 and 0 - 7, in turn values n = 1 through 13
+    and n = 1 through 8.
+    '''
+    Products = []
+    end      = min(len(l1), len(l2))     # end = 8 in the above scenario
+    if end < 1: return
+    for i in range(end): Products.append(ListDirichlet(l1, l2, i + 1))
+    return(Products)
+
+
+    
 #
 # Functions
 #
+
 
 def I(n):
     '''I(n) returns 1 if n is 1, 0 otherwise (the identity function for D'multiplication)'''
@@ -234,24 +287,39 @@ def I(n):
     if n == 1: return 1
     return 0
 
+
 def U(n):
     '''U(n) returns 1 for all n (the unit function, Mobius inverse)'''
     if n < 1: return 'U(n) error: n not in Z+'
     return 1
+
 
 def N(n):
     '''N(n) returns n'''
     if n < 1: return 'N(n) error: n not in Z+'
     return n
 
+
 def Na(n, a):
     '''Na(n, a) returns n raised to the a power'''
     if n < 1: return 'Na(n) error: n not in Z+'
     return n**a
 
+
 def d(n):
     '''d(n) returns the number of divisors of n'''
     return len(divisors(n))
+
+
+def ArithmeticMean(fn, n):
+    '''For upper limit n calculate the arithmetic mean of fn(i)'''
+    return sum([fn(i) for i in range(1, n+1)])/n
+
+
+def AMList(fn, n):
+    '''Return a list of arithmetic means for fn over 1, 2, 3, ..., n'''
+    return [ArithmeticMean(fn, i) for i in range(1, n+1)]
+
 
 
 # Frenkel: A miracle describing an infinite sequence of numbers a(p) using Harmonic Analysis
@@ -266,12 +334,14 @@ def d(n):
 #   giving coefficients of q, q**2, q**3, ... as 1, -2, -1, 2, 1, 2, -2, -2, -2, 1, -2, 4, ...
 # This can be checked for primes 2, 3, 5, 7, 11, 13 (or more were we inclined to do some algebra)
 
+
 def EvaluateEF(a0, a1, a2, b0, b1, b2, b3, x, y, p):
     '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
     y_sum = a0 + a1*y + a2*(y**2) 
     x_sum = b0 + b1*x + b2*(x**2) + b3*(x**3)          # odd error: make final exponent 2 to recover count = -p
     return (y_sum % p) == (x_sum % p)
 
+    
 def EllipticTest(x, y, p):
     '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
     y_sum = y**2 + y 
@@ -311,10 +381,10 @@ if __name__ == '__main__':
     for i in range(15, 23): print('      ', i, TotientMobiusProduct(i))
     print('Nu(210):', Nu(210)) 
     print('Dirichlet(Totient, Mobius, 18):', Dirichlet(Totient, Mobius, 18))
-    print('ListDirichlet([0, 1, 2, 3, 4, 6, 6, 7], [0, 7, 6, 5, 4, 3, 2, 1], 7):',
-          ListDirichlet([0, 1, 2, 3, 4, 6, 6, 7], [0, 7, 6, 5, 4, 3, 2, 1], 7))
-    print('ScanningListDirichlet([0, 1, 2, 3, 4, 6, 6, 7], [0, 7, 6, 5, 4, 3, 2, 1]):',
-          ScanningListDirichlet([0, 1, 2, 3, 4, 6, 6, 7], [0, 7, 6, 5, 4, 3, 2, 1]))
+    print('ListDirichlet([1, 2, 3, 4, 6, 6, 7], [7, 6, 5, 4, 3, 2, 1], 7):',
+          ListDirichlet([1, 2, 3, 4, 6, 6, 7], [7, 6, 5, 4, 3, 2, 1], 7))
+    print('ScanningListDirichlet([1, 2, 3, 4, 6, 6, 7], [7, 6, 5, 4, 3, 2, 1]):',
+          ScanningListDirichlet([1, 2, 3, 4, 6, 6, 7], [7, 6, 5, 4, 3, 2, 1]))
     print('I(10):', I(10))
     print('U(20):', U(20))
     print('N(73):', N(73), '(should be identity)')
