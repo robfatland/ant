@@ -1,9 +1,41 @@
 # analytic number theory utilities
 #   notes
-#     - Function lists do not index to integers; it is too much of a hassle
-#         - func1[0] is the value of the function evaluated at n = 1
+#     - Some arithmetic function functions() return a list. Such a list does not index by integer argument
+#       as this is too much hassle. So (mixing notation) mu[0] = mu(1) = 1 and mu[1] = mu(2) = -1
+
 
 from math import sqrt, prod, log2, log10, log, floor, ceil, nan
+
+
+######
+# Test Python formalism: On import gives 'ant'; on direct run gives '__main__'.
+######
+# print("Within ant.py: __name__ is", __name__)
+
+
+######
+# Constants
+######
+
+# Euler's constant would be written ant.gamma in Notebook code
+
+
+gamma = 0.57721566490153286060651209008240243104215933593992
+
+
+def EulersConstant(n):
+    '''Calculate an approximation of Euler's constant from n terms: Partial harmonic sum - log n'''
+    ph_sum = 0
+    for i in range(1, n+1): ph_sum += 1/i
+    return ph_sum - log(n)
+
+
+def Gamma(n): return EulersConstant(n)
+
+
+######
+# Basic arithmetic 
+######
 
 
 def even(a):
@@ -164,6 +196,11 @@ def boolkey(n):
     return key
 
 
+#######
+# Functions part 1
+#######
+
+
 def Totient(n):
     '''Totient(n) returns integer count of numbers < n that are relatively prime to n'''
     if n < 1: return 'Totient(n) error: argument not in Z+'
@@ -220,15 +257,56 @@ def Nu(n):
     if n == 1: return 0
     return len(uniquefactors(n))
     
+    
+########
+# Functions part 2: Zeta
+########
+
+def zeta(s):
+    '''
+    Handles positive real s not equal to 1 so far.
+    '''
+    print(type(s))
+    if s > 1: return zeta_s_gt_1(s, 1000000)
+    elif s > 0 and s < 1: return zeta_s_on_0_1(s, 100000)
+    elif s == 1: return gamma          # This is just a little joke; see Cauchy principal value for zeta(1)
+    else: return 'not dreamed of in my philosophy yet'
 
 
-# Dirichlet product / convolution
-#   Dirichlet(fn1, fn2, n) uses two function names to calculate fn1 * fn2 at n
-#     ...ListDirichlet(l1, l2, n) likewise returns a Dirichlet product at n:
-#          this version works from list-based functions with indices 0, 1, 2, ..., n
-#          index 0 is never used, l1[1] is the function value at 1 and so forth
-#     ...ScanningListDirichlet returns a list of D-products for n = 1, 2, ..., m
-#          where m is the minimum list length between l1 and l2
+def zeta_s_gt_1(s, n):
+    '''
+    Evaluate zeta on the real line, s > 1, precision n (number of terms).
+    This will be accurate to about one part in a million for n = 1000000.
+    For the default number of terms see the hardcode in `ant.py`.
+    For further options: See Wikipedia on Rational zeta series.
+    n.b.: Basel problem s = 2 gives pi squared over six.
+    '''
+    zeta_sum = 0
+    for i in range(1, n+1): zeta_sum += pow(1/i, s)
+    return zeta_sum
+
+
+def seta_s_on_0_1(s, n):
+    '''
+    Modify to return the limit of expr(x) as x goes to \infty: See Tommy p.55 for expr.
+    This returns the value for s = 1/2: -1.46.
+    '''
+    return -1.46035450880958681288
+
+
+########
+# Dirichlet multiplication
+########
+# 
+# This code does Dirichlet products (or 'convolutions')
+#   Dirichlet(fn1, fn2, n) uses two passed function names to calculate fn1 * fn2 at n
+#   ListDirichlet(l1, l2, n) returns a Dirichlet product at n:
+#     Assumption: Functions are passed as two lists (contrast with above)
+#     Assumption: len(L1) = len(L2) = n
+#     Convention: l1[0] is the function L1 evaluated at n = 1
+#   ScanningListDirichlet(L1, L2, n) 
+#     ...uses the same function-as-list approach for L1 and L2
+#     ...returns a list of Dirichlet products for 1, 2, ..., n
 
  
 def Dirichlet(fn1, fn2, n):
@@ -250,35 +328,34 @@ def dirichlet(fn1, fn2, n):
 
 def ListDirichlet(l1, l2, n):
     '''
-    ListDirichlet(l1, l2, n) returns the Dirichlet product of two (list) functions evaluated at n.
-    These functions are taken as value lists indexed [0, ..., n-1] so n is equal to an
-    index i plus one. For a divisor d the index will be d-1.
+    ListDirichlet(l1, l2, n) returns the Dirichlet product of two (list) functions 
+    evaluated at n. The functions l1 and l2 are indexed [0, ..., n-1] so n corresponds
+    to list index n-1.
     '''
-    if n < 1:  return False
-    if n == 1: return(l1[0]*l2[0])
-    total = 0
-    for d in divisors(n): total += l1[d-1] * l2[n//d - 1]
-    return total
+    if n < 1:                      return False
+    if len(l1) < n or len(l2) < n: return False
+    dirichlet_sum = 0
+    for d in divisors(n): dirichlet_sum += l1[d-1] * l2[n//d - 1]
+    return dirichlet_sum
 
 
 def ScanningListDirichlet(l1, l2):
     '''
     ScanningListDirichlet(l1, l2) returns a list of n Dirichlet products indexed
-    0, 1, ... n-1. Here n = min(len(l1), len(l2)). Let len(l1) = 13 and len(l2) = 8.
-    These correspond to elements 0 - 12 and 0 - 7, in turn values n = 1 through 13
-    and n = 1 through 8.
+    0, 1, ... n-1. Here n = len(l1) presumed to equal len(l2). 
     '''
     Products = []
-    end      = min(len(l1), len(l2))     # end = 8 in the above scenario
-    if end < 1: return
-    for i in range(end): Products.append(ListDirichlet(l1, l2, i + 1))
+    if not len(l1) == len(l2): return False
+    n = len(l1)
+    if n < 1: return False
+    for i in range(n): Products.append(ListDirichlet(l1, l2, i + 1))
     return(Products)
 
 
     
-#
-# Functions
-#
+######
+# Functions from number theory
+######
 
 
 def I(n):
@@ -311,6 +388,11 @@ def d(n):
     return len(divisors(n))
 
 
+#######
+# Arithmetic Mean (AM)
+#######
+
+
 def ArithmeticMean(fn, n):
     '''For upper limit n calculate the arithmetic mean of fn(i)'''
     return sum([fn(i) for i in range(1, n+1)])/n
@@ -321,33 +403,9 @@ def AMList(fn, n):
     return [ArithmeticMean(fn, i) for i in range(1, n+1)]
 
 
-
-# Frenkel: A miracle describing an infinite sequence of numbers a(p) using Harmonic Analysis
-#
-# validate by computation: The counting problem solution for a particular elliptic
-# curve modulo p equals the coefficients of a generating function: For each q raised
-# to the p. The elliptic curve in consideration is y**2 + y = x**3 - x**2.
-# 
-# From numberphile: Frenkel on the Langlands program, https://www.youtube.com/watch?v=4dyytPboqvE&t=910s
-#
-# polynomial = q (1-q)**2 (1 - q**11)**2 (1-q**2)**2 (1-q**22)**2 (1-q**3)**2 (1-q**33)**2 (1-q**4)**2
-#   giving coefficients of q, q**2, q**3, ... as 1, -2, -1, 2, 1, 2, -2, -2, -2, 1, -2, 4, ...
-# This can be checked for primes 2, 3, 5, 7, 11, 13 (or more were we inclined to do some algebra)
-
-
-def EvaluateEF(a0, a1, a2, b0, b1, b2, b3, x, y, p):
-    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
-    y_sum = a0 + a1*y + a2*(y**2) 
-    x_sum = b0 + b1*x + b2*(x**2) + b3*(x**3)          # odd error: make final exponent 2 to recover count = -p
-    return (y_sum % p) == (x_sum % p)
-
-    
-def EllipticTest(x, y, p):
-    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
-    y_sum = y**2 + y 
-    x_sum = x**3 - x**2
-    return (y_sum % p) == (x_sum % p)
-
+########
+# main is used to test selected functions
+########
 
 if __name__ == '__main__':
     '''ant module main: test the functions. Run this from the command line "python ant.py"'''
