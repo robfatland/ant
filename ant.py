@@ -259,26 +259,27 @@ def Nu(n):
     
     
 ########
-# Functions part 2: Zeta
+# Functions part 2: Zeta on the complex plain
 ########
 
 def zeta(s):
-    '''
-    Handles positive real s not equal to 1 so far.
-    '''
-    print(type(s))
-    if s > 1: return zeta_s_gt_1(s, 1000000)
-    elif s > 0 and s < 1: return zeta_s_on_0_1(s, 100000)
-    elif s == 1: return gamma          # This is just a little joke; see Cauchy principal value for zeta(1)
-    else: return 'not dreamed of in my philosophy yet'
-
+    # Handles s types int, float or complex 
+    if type(s) == int: s = float(s) 
+    if type(s) == float:
+        if s <= 0.: return 0.                    # stopgap
+        if s < 1.: return zeta_s_on_0_1(s, 10000)
+        if s == 1.: return float('inf')          # zeta(1) diverges to +-infinity
+        if s > 1.: return zeta_s_gt_1(s, 10000)
+    elif type(s) == complex:
+        return 0.    # stopgap
+    else:
+        return 'type not recognized in zeta(s)'
 
 def zeta_s_gt_1(s, n):
     '''
-    Evaluate zeta on the real line, s > 1, precision n (number of terms).
-    This will be accurate to about one part in a million for n = 1000000.
-    For the default number of terms see the hardcode in `ant.py`.
-    For further options: See Wikipedia on Rational zeta series.
+    Evaluate zeta > 1, where n is a precision parameter: Number of terms to sum,
+    accurate to about one part in a million for n = 1000000. For further options: 
+    See Wikipedia on Rational zeta series.
     n.b.: Basel problem s = 2 gives pi squared over six.
     '''
     zeta_sum = 0
@@ -286,19 +287,20 @@ def zeta_s_gt_1(s, n):
     return zeta_sum
 
 
-def seta_s_on_0_1(s, n):
+# Incomplete, hardcoded
+def zeta_s_on_0_1(s, n):
     '''
     Modify to return the limit of expr(x) as x goes to \infty: See Tommy p.55 for expr.
     This returns the value for s = 1/2: -1.46.
     '''
-    return -1.46035450880958681288
+    return -1.46035450880958681288       # stopgap
 
 
 ########
-# Dirichlet multiplication
+# Dirichlet convolution
 ########
 # 
-# This code does Dirichlet products (or 'convolutions')
+# This code does Dirichlet convolutions
 #   Dirichlet(fn1, fn2, n) uses two passed function names to calculate fn1 * fn2 at n
 #   ListDirichlet(l1, l2, n) returns a Dirichlet product at n:
 #     Assumption: Functions are passed as two lists (contrast with above)
