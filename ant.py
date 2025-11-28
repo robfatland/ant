@@ -223,6 +223,15 @@ def GeneralizedTotient(k, n):
     return gtotient
 
 
+def GeneralizedTotient0(n): return GeneralizedTotient(0, n)
+def GeneralizedTotient1(n): return GeneralizedTotient(1, n)
+def GeneralizedTotient2(n): return GeneralizedTotient(2, n)
+def GeneralizedTotient3(n): return GeneralizedTotient(3, n)
+def GeneralizedTotient4(n): return GeneralizedTotient(4, n)
+def GeneralizedTotient5(n): return GeneralizedTotient(5, n)
+def GeneralizedTotient6(n): return GeneralizedTotient(6, n)
+
+
 def ExtendedTotient(x, n): 
     '''ExtendedTotient(float x, int n) returns integer count of rp-to-n for m <= floor(x)'''
     if x < 1: return 0
@@ -290,7 +299,7 @@ def zeta_s_gt_1(s, n):
 # Incomplete, hardcoded
 def zeta_s_on_0_1(s, n):
     '''
-    Modify to return the limit of expr(x) as x goes to \infty: See Tommy p.55 for expr.
+    Modify to return the limit of expr(x) as x goes to infinity: See Tommy p.55 for expr.
     This returns the value for s = 1/2: -1.46.
     '''
     return -1.46035450880958681288       # stopgap
@@ -383,6 +392,20 @@ def Na(n, a):
     '''Na(n, a) returns n raised to the a power'''
     if n < 1: return 'Na(n) error: n not in Z+'
     return n**a
+
+def Nk(n, k):
+    '''Nk(n, k) returns n raised to the k power'''
+    if n < 1: return 'Nk(n, k) error: n not in Z+'
+    return n**k
+
+# Convenience example power functions using exponent k
+def Nk0(n): return Nk(n, 0)
+def Nk1(n): return Nk(n, 1)
+def Nk2(n): return Nk(n, 2)
+def Nk3(n): return Nk(n, 3)
+def Nk4(n): return Nk(n, 4)
+def Nk5(n): return Nk(n, 5)
+def Nk6(n): return Nk(n, 6)
 
 
 def d(n):

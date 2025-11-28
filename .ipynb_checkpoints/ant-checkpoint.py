@@ -8,10 +8,10 @@ from math import sqrt, prod, log2, log10, log, floor, ceil, nan
 
 
 ######
-# Test Python formalism
+# Test Python formalism: On import gives 'ant'; on direct run gives '__main__'.
 ######
+# print("Within ant.py: __name__ is", __name__)
 
-print("Within ant.py: __name__ is", __name__)
 
 ######
 # Constants
@@ -28,6 +28,9 @@ def EulersConstant(n):
     ph_sum = 0
     for i in range(1, n+1): ph_sum += 1/i
     return ph_sum - log(n)
+
+
+def Gamma(n): return EulersConstant(n)
 
 
 ######
@@ -220,6 +223,15 @@ def GeneralizedTotient(k, n):
     return gtotient
 
 
+def GeneralizedTotient0(n): return GeneralizedTotient(0, n)
+def GeneralizedTotient1(n): return GeneralizedTotient(1, n)
+def GeneralizedTotient2(n): return GeneralizedTotient(2, n)
+def GeneralizedTotient3(n): return GeneralizedTotient(3, n)
+def GeneralizedTotient4(n): return GeneralizedTotient(4, n)
+def GeneralizedTotient5(n): return GeneralizedTotient(5, n)
+def GeneralizedTotient6(n): return GeneralizedTotient(6, n)
+
+
 def ExtendedTotient(x, n): 
     '''ExtendedTotient(float x, int n) returns integer count of rp-to-n for m <= floor(x)'''
     if x < 1: return 0
@@ -256,26 +268,27 @@ def Nu(n):
     
     
 ########
-# Functions part 2: Zeta
+# Functions part 2: Zeta on the complex plain
 ########
 
 def zeta(s):
-    '''
-    Handles positive real s not equal to 1 so far.
-    '''
-    print(type(s))
-    if s > 1: return zeta_s_gt_1(s, 1000000)
-    elif s > 0 and s < 1: return zeta_s_on_0_1(s, 100000)
-    elif s == 1: return gamma          # This is just a little joke; see Cauchy principal value for zeta(1)
-    else: return 'not dreamed of in my philosophy yet'
-
+    # Handles s types int, float or complex 
+    if type(s) == int: s = float(s) 
+    if type(s) == float:
+        if s <= 0.: return 0.                    # stopgap
+        if s < 1.: return zeta_s_on_0_1(s, 10000)
+        if s == 1.: return float('inf')          # zeta(1) diverges to +-infinity
+        if s > 1.: return zeta_s_gt_1(s, 10000)
+    elif type(s) == complex:
+        return 0.    # stopgap
+    else:
+        return 'type not recognized in zeta(s)'
 
 def zeta_s_gt_1(s, n):
     '''
-    Evaluate zeta on the real line, s > 1, precision n (number of terms).
-    This will be accurate to about one part in a million for n = 1000000.
-    For the default number of terms see the hardcode in `ant.py`.
-    For further options: See Wikipedia on Rational zeta series.
+    Evaluate zeta > 1, where n is a precision parameter: Number of terms to sum,
+    accurate to about one part in a million for n = 1000000. For further options: 
+    See Wikipedia on Rational zeta series.
     n.b.: Basel problem s = 2 gives pi squared over six.
     '''
     zeta_sum = 0
@@ -283,19 +296,20 @@ def zeta_s_gt_1(s, n):
     return zeta_sum
 
 
-def seta_s_on_0_1(s, n):
+# Incomplete, hardcoded
+def zeta_s_on_0_1(s, n):
     '''
-    Modify to return the limit of expr(x) as x goes to \infty: See Tommy p.55 for expr.
+    Modify to return the limit of expr(x) as x goes to infinity: See Tommy p.55 for expr.
     This returns the value for s = 1/2: -1.46.
     '''
-    return -1.46035450880958681288
+    return -1.46035450880958681288       # stopgap
 
 
 ########
-# Dirichlet multiplication
+# Dirichlet convolution
 ########
 # 
-# This code does Dirichlet products (or 'convolutions')
+# This code does Dirichlet convolutions
 #   Dirichlet(fn1, fn2, n) uses two passed function names to calculate fn1 * fn2 at n
 #   ListDirichlet(l1, l2, n) returns a Dirichlet product at n:
 #     Assumption: Functions are passed as two lists (contrast with above)
@@ -379,10 +393,29 @@ def Na(n, a):
     if n < 1: return 'Na(n) error: n not in Z+'
     return n**a
 
+def Nk(n, k):
+    '''Nk(n, k) returns n raised to the k power'''
+    if n < 1: return 'Nk(n, k) error: n not in Z+'
+    return n**k
+
+# Convenience example power functions using exponent k
+def Nk0(n): return Nk(n, 0)
+def Nk1(n): return Nk(n, 1)
+def Nk2(n): return Nk(n, 2)
+def Nk3(n): return Nk(n, 3)
+def Nk4(n): return Nk(n, 4)
+def Nk5(n): return Nk(n, 5)
+def Nk6(n): return Nk(n, 6)
+
 
 def d(n):
     '''d(n) returns the number of divisors of n'''
     return len(divisors(n))
+
+
+#######
+# Arithmetic Mean (AM)
+#######
 
 
 def ArithmeticMean(fn, n):
@@ -393,34 +426,6 @@ def ArithmeticMean(fn, n):
 def AMList(fn, n):
     '''Return a list of arithmetic means for fn over 1, 2, 3, ..., n'''
     return [ArithmeticMean(fn, i) for i in range(1, n+1)]
-
-
-
-# Frenkel: A miracle describing an infinite sequence of numbers a(p) using Harmonic Analysis
-#
-# validate by computation: The counting problem solution for a particular elliptic
-# curve modulo p equals the coefficients of a generating function: For each q raised
-# to the p. The elliptic curve in consideration is y**2 + y = x**3 - x**2.
-# 
-# From numberphile: Frenkel on the Langlands program, https://www.youtube.com/watch?v=4dyytPboqvE&t=910s
-#
-# polynomial = q (1-q)**2 (1 - q**11)**2 (1-q**2)**2 (1-q**22)**2 (1-q**3)**2 (1-q**33)**2 (1-q**4)**2
-#   giving coefficients of q, q**2, q**3, ... as 1, -2, -1, 2, 1, 2, -2, -2, -2, 1, -2, 4, ...
-# This can be checked for primes 2, 3, 5, 7, 11, 13 (or more were we inclined to do some algebra)
-
-
-def EvaluateEF(a0, a1, a2, b0, b1, b2, b3, x, y, p):
-    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
-    y_sum = a0 + a1*y + a2*(y**2) 
-    x_sum = b0 + b1*x + b2*(x**2) + b3*(x**3)          # odd error: make final exponent 2 to recover count = -p
-    return (y_sum % p) == (x_sum % p)
-
-    
-def EllipticTest(x, y, p):
-    '''Bool evaluate elliptic function mod p equality: quad in y (a) vs cubic in x (b)'''
-    y_sum = y**2 + y 
-    x_sum = x**3 - x**2
-    return (y_sum % p) == (x_sum % p)
 
 
 ########
