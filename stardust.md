@@ -1,6 +1,41 @@
-# Stardust: From the Big Bang to Your Hemoglobin
+# Stardust
+
+## The Big Bang Starting Point
+
+
+The universe we can see today began -- we think, with a great deal of supporting evidence -- as a rapidly expanding ball of energy. 
+As it expanded it quickly reached a point where the energy converted to protons, neutrons and electrons: The stuff we know atoms are made of.
+This is related to Einstein's equation stating that matter and energy are forms of the same thing.
+At three minutes this soup of protons and electrons and neutrons had enough energy to begin clumping together.
+A single proton would be a Hydrogen nucleus.
+Two protons and two neutrons could smash together to make a Helium nucleus.
+Things look promising so far. 
+There was a period of about 20 minutes when conditions were right for this smashing together process.
+After that things had expanded and cooled to a point where building heavier atoms was no longer possible.
+In the 20 minute 'nucleosynthesis' time window a great deal of Helium was manufactored. 
+But much longer "hot" times are needed to build elements heavier than Helium; like millions of years and millions of degrees. 
+With only twenty minutes to work with: Almost nothing heavier than Helium wasa produced in our early universe. 
+
+
+The after-twenty-minutes result: The universe had:
+
+
+- ~75% Hydrogen (by mass)
+- ~25% Helium-4
+- Traces of Deuterium, Helium-3, Lithium-7
+
+
+That's it. No carbon, no oxygen, no iron. And yet here we are, made out of oxygen and carbon (and hydrogen) and
+phosphorous in our DNA and iron in our blood to help carry oxygen and calcium to help keep our bones strong and 
+so on. Since they were not constructed from the soup at the start, these heavier elements must have been 
+manufactured "in the meanwhile", in the intervening 14 billion years. That is the big mystery: How did this happen, 
+this building of heavier elements? And incidentally our solar system is young, about 4.6 billion years old. We 
+are the new kids on the block... and we have lots of questions, starting with 'Where did all this phosphorous
+(and such) come from?'
+
 
 ## Orion, Rigel, and the Mythology
+
 
 In Greek mythology, Orion was a giant hunter — son of Poseidon, gifted with the ability
 to walk on water. He boasted he could kill every animal on Earth, which provoked Gaia
@@ -20,9 +55,11 @@ the next few million years.
 
 ## The Orion Nebula and Heavy Element Seeding
 
+
 The Orion Nebula (M42) sits in Orion's sword, about 1,350 light-years away. It's one
 of the nearest active star-forming regions — a stellar nursery where new stars are
 condensing out of gas and dust right now.
+
 
 The connection to nucleosynthesis is direct: the gas in the Orion Nebula has been
 enriched by previous generations of massive stars that lived and died in this region.
@@ -42,15 +79,6 @@ formation in this region.
 
 ---
 
-## Big Bang Nucleosynthesis: The Starting Point
-
-The universe began with only the lightest elements:
-- ~75% Hydrogen (by mass)
-- ~25% Helium-4
-- Traces of Deuterium, Helium-3, Lithium-7
-
-That's it. No carbon, no oxygen, no iron. The nucleosynthesis window lasted only
-about 3 minutes (from ~10 seconds to ~20 minutes after the Big Bang).
 
 ### The Mass-5 and Mass-8 Bottleneck
 
@@ -68,10 +96,13 @@ cores but not in the rapidly expanding, cooling early universe.
 
 ## Stellar Nucleosynthesis: Building the Periodic Table
 
+
 Stars bridge the gap. Once gravitational collapse creates cores hot and dense enough,
 fusion proceeds through a sequence of burning stages.
 
+
 ### Minimum Stellar Mass for Each Stage
+
 
 | Burning Stage | Minimum Mass (Solar) | Core Temperature |
 |---------------|---------------------|-----------------|
